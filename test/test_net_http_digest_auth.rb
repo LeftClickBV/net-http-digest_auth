@@ -60,6 +60,16 @@ class TestNetHttpDigestAuth < Minitest::Test
     assert_equal expected, @da.auth_header(@uri, multi_header, 'GET')
   end
 
+  def test_auth_header_unquoted_unspaced
+    header = [
+      'Digest qop=auth',
+      'realm="www.example.com"',
+      'nonce=4107baa081a592a6021660200000cd6c5686ff5f579324402b374d83e2c9'
+    ].join ','
+
+    assert_equal expected, @da.auth_header(@uri, header, 'GET')
+  end
+
   def test_auth_header_no_qop
     @header.sub! ' qop="auth",', ''
 
