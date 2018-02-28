@@ -54,6 +54,12 @@ class TestNetHttpDigestAuth < Minitest::Test
     assert_equal expected, @da.auth_header(@uri, @header, 'GET', true)
   end
 
+  def test_auth_header_multi
+    multi_header = "NTLM, #{@header}, Basic realm=\"www.example.com\""
+
+    assert_equal expected, @da.auth_header(@uri, multi_header, 'GET')
+  end
+
   def test_auth_header_no_qop
     @header.sub! ' qop="auth",', ''
 

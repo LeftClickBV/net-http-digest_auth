@@ -79,9 +79,9 @@ class Net::HTTP::DigestAuth
     user     = CGI.unescape uri.user
     password = CGI.unescape uri.password
 
-    www_authenticate =~ /^(\w+) (.*)/
+    www_authenticate =~ /Digest ((?:\w+=(?:"[^"]+?"|[^\s,]+)(?:,\s?)?)+)/
 
-    challenge = $2
+    challenge = $1
 
     params = {}
     challenge.gsub(/(\w+)="(.*?)"/) { params[$1] = $2 }
