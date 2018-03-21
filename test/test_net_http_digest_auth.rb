@@ -23,9 +23,9 @@ class TestNetHttpDigestAuth < Minitest::Test
       'qop=auth',
       'uri="/"',
       'nonce="4107baa081a592a6021660200000cd6c5686ff5f579324402b374d83e2c9"',
-      'nc=00000000',
+      'nc=00000001',
       'cnonce="9ea5ff3bd34554a4165bbdc1df91dcff"',
-      'response="67be92a5e7b38d08679957db04f5da04"'
+      'response="1f5f0cd1588690c1303737f081c0b9bb"'
     ]
 
     @da = Net::HTTP::DigestAuth.new
@@ -42,8 +42,8 @@ class TestNetHttpDigestAuth < Minitest::Test
   def test_auth_header
     assert_equal expected, @da.auth_header(@uri, @header, 'GET')
 
-    @expected[6] = 'nc=00000001'
-    @expected[8] = 'response="1f5f0cd1588690c1303737f081c0b9bb"'
+    @expected[6] = 'nc=00000002'
+    @expected[8] = 'response="87b2331cd957b9808b7adb3b7e94f1e0"'
 
     assert_equal expected, @da.auth_header(@uri, @header, 'GET')
   end
@@ -60,7 +60,7 @@ class TestNetHttpDigestAuth < Minitest::Test
     @expected[8] = 'response="32f6ca1631ccf7c42a8075deff44e470"'
     @expected.delete 'qop=auth'
     @expected.delete 'cnonce="9ea5ff3bd34554a4165bbdc1df91dcff"'
-    @expected.delete 'nc=00000000'
+    @expected.delete 'nc=00000001'
 
     assert_equal expected, @da.auth_header(@uri, @header, 'GET')
   end
@@ -73,7 +73,7 @@ class TestNetHttpDigestAuth < Minitest::Test
   end
 
   def test_auth_header_post
-    @expected[8] = 'response="d82219e1e5430b136bbae1670fa51d48"'
+    @expected[8] = 'response="ac8b098bbcc6ac9ab5a67f68d4fc63b6"'
 
     assert_equal expected, @da.auth_header(@uri, @header, 'POST')
   end
@@ -82,14 +82,14 @@ class TestNetHttpDigestAuth < Minitest::Test
     @header << ', algorithm=MD5-sess'
 
     @expected[2] = 'algorithm=MD5-sess'
-    @expected[8] = 'response="c22c5bd9112a86ca78ddc1ae772daeeb"'
+    @expected[8] = 'response="00f9b983fa8e9b7bfbec1d8954a1b7ff"'
 
     assert_equal expected, @da.auth_header(@uri, @header, 'GET')
   end
 
   def test_auth_header_sha1
     @expected[2] = 'algorithm=SHA1'
-    @expected[8] = 'response="2cb62fc18f7b0ebdc34543f896bb77686b4115e4"'
+    @expected[8] = 'response="84ce3d3d0093369e99fec4b18727b070c089ab98"'
 
     @header << 'algorithm=SHA1'
 

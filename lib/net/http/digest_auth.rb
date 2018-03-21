@@ -56,7 +56,7 @@ class Net::HTTP::DigestAuth
 
   def initialize ignored = :ignored
     mon_initialize
-    @nonce_count = -1
+    @nonce_count = 0
   end
 
   ##
