@@ -128,6 +128,26 @@ class TestNetHttpDigestAuth < Minitest::Test
     assert_equal expected, @da.auth_header(@uri, @header, 'GET')
   end
 
+  def test_auth_header_error
+    no_digest_auth_header = "Basic realm=\"www.example.com\""
+    erroneous_header = @header.gsub('=', '')
+
+    e = assert_raises Net::HTTP::DigestAuth::Error do
+      @da.auth_header(@uri, no_digest_auth_header, 'GET')
+    end
+
+    assert_equal "Digest auth method not found or syntax error in " +
+                 "auth header: #{no_digest_auth_header}",
+                 e.message
+
+    e = assert_raises Net::HTTP::DigestAuth::Error do
+      @da.auth_header(@uri, erroneous_header, 'GET')
+    end
+
+    assert_equal "Digest auth method not found or syntax error in " +
+                 "auth header: #{erroneous_header}", e.message
+  end
+
   def test_make_cnonce
     da = Net::HTTP::DigestAuth.new
 

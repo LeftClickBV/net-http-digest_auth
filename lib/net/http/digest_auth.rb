@@ -70,6 +70,10 @@ class Net::HTTP::DigestAuth
   #
   # See Net::HTTP::DigestAuth for a complete example.
   #
+  # Raises an Net::HTTP::DigestAuth::Error if there is a syntax error
+  # in the +www_authenticate+ header or it does not include the Digest
+  # authentication method.
+  #
   # IIS servers handle the "qop" parameter of digest authentication
   # differently so you may need to set +iis+ to true for such servers.
 
@@ -79,9 +83,12 @@ class Net::HTTP::DigestAuth
     user     = CGI.unescape uri.user
     password = CGI.unescape uri.password
 
-    www_authenticate =~ /Digest ((?:\w+=(?:"[^"]+?"|[^\s,]+)(?:,\s?)?)+)/
-
-    challenge = $1
+    if www_authenticate =~ /Digest ((?:\w+=(?:"[^"]+?"|[^\s,]+)(?:,\s?)?)+)/
+      challenge = $1
+    else
+      raise Error, "Digest auth method not found or syntax error in " +
+                   "auth header: #{www_authenticate}"
+    end
 
     params = {}
     challenge.gsub(/(\w+)=(?:"([^"]+?)"|([^\s,]+))/) { params[$1] = $2 || $3 }
